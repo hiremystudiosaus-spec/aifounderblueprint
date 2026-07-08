@@ -42,7 +42,7 @@ function Blogs() {
         <div className="grid-3">
           {filteredBlogs.length > 0 ? (
             filteredBlogs.map(blog => (
-              <Link to={`/blog/${blog.slug}`} key={blog.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Link to={`/blogs/${blog.slug}`} key={blog.id} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <Card style={{ backgroundColor: 'var(--color-secondary-light)', height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <img 
                     src={blog.image} 
