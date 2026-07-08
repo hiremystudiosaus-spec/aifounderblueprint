@@ -6,19 +6,6 @@ import Accordion from '../components/Accordion';
 function Home() {
   return (
     <>
-      {/* Section 2: The Internship Highlight (Banner) */}
-      <section style={{ backgroundColor: 'var(--color-primary-accent)', color: 'var(--color-secondary-light)', borderBottom: 'var(--border-thick)' }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', flexWrap: 'wrap', gap: '16px' }}>
-          <div style={{ flex: 1, minWidth: '300px' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px', color: 'var(--color-secondary-light)' }}>Get a Real Chance at an Internship</h3>
-            <p style={{ fontSize: '1rem', opacity: 0.9 }}>
-              When you join and complete this course, you get a real chance at an internship opportunity with hiremystudios and AquariusAI — our companies based in Australia. This isn't just learning. It's a real step into your career.
-            </p>
-          </div>
-          <img src="/internship_image.png" alt="Internship Opportunity" style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', border: '2px solid var(--color-primary-dark)', boxShadow: '4px 4px 0px var(--color-primary-dark)' }} />
-        </div>
-      </section>
-
       {/* Section 1: Hero Section */}
       <section className="section-padding text-center" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="ambient-glow-container">
@@ -44,6 +31,19 @@ function Home() {
           <div>
             <img src="/hero_image.png" alt="Building with AI" style={{ width: '100%', borderRadius: '24px', border: 'var(--border-thick)', boxShadow: '8px 8px 0px var(--color-primary-accent)', objectFit: 'cover' }} />
           </div>
+        </div>
+      </section>
+
+      {/* Section 2: The Internship Highlight (Banner) */}
+      <section style={{ backgroundColor: 'var(--color-primary-accent)', color: 'var(--color-secondary-light)', borderBottom: 'var(--border-thick)' }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', flexWrap: 'wrap', gap: '16px' }}>
+          <div style={{ flex: 1, minWidth: '300px' }}>
+            <h3 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '12px', color: 'var(--color-secondary-light)' }}>Get a Real Chance at an Internship</h3>
+            <p style={{ fontSize: '1rem', opacity: 0.9 }}>
+              When you join and complete this course, you get a real chance at an internship opportunity with hiremystudios and AquariusAI — our companies based in Australia. This isn't just learning. It's a real step into your career.
+            </p>
+          </div>
+          <img src="/internship_image.png" alt="Internship Opportunity" style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '12px', border: '2px solid var(--color-primary-dark)', boxShadow: '4px 4px 0px var(--color-primary-dark)' }} />
         </div>
       </section>
 
