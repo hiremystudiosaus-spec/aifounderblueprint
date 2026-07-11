@@ -70,7 +70,7 @@ function Apply() {
 
     const applicationPayload = {
       ...formData,
-      price: priceObj.display,
+      price: priceObj.amount.toString(),
       currency: priceObj.currency,
       status: 'user',
       applicationId: uniqueId,
