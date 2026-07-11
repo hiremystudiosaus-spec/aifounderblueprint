@@ -6,6 +6,8 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Blogs from './pages/Blogs';
 import BlogPost from './pages/BlogPost';
+import Apply from './pages/Apply';
+import Success from './pages/Success';
 import './index.css';
 
 // Scroll to top on route change
@@ -29,7 +31,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/blogs" element={<Blogs />} />
-            <Route path="/blogs/:slug" element={<BlogPost />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/apply" element={<Apply />} />
+            <Route path="/success" element={<Success />} />
           </Routes>
         </main>
         <Footer />

@@ -23,7 +23,7 @@ function Header() {
             <Link to="/blogs" style={{ color: 'var(--color-primary-dark)', textDecoration: 'none' }}>Blogs</Link>
           </nav>
           <div className="desktop-only" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button variant="primary" style={{ padding: '8px 24px' }}>Join The Course</Button>
+            <Button to="/apply" variant="primary" style={{ padding: '8px 24px' }}>Join The Course</Button>
           </div>
 
           {/* Mobile Hamburger */}
@@ -48,7 +48,7 @@ function Header() {
             <a href={isHome ? "#course" : "/#course"} onClick={() => setIsMobileMenuOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>The Journey</a>
             <a href={isHome ? "#faq" : "/#faq"} onClick={() => setIsMobileMenuOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>FAQ</a>
             <Link to="/blogs" onClick={() => setIsMobileMenuOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>Blogs</Link>
-            <Button variant="primary" style={{ marginTop: '16px', padding: '16px 32px', fontSize: '1.25rem' }}>Join The Course</Button>
+            <Button to="/apply" onClick={() => setIsMobileMenuOpen(false)} variant="primary" style={{ marginTop: '16px', padding: '16px 32px', fontSize: '1.25rem' }}>Join The Course</Button>
           </nav>
         </div>
       )}

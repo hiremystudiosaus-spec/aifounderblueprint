@@ -1,11 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Button = ({ children, variant = 'primary', className = '', ...props }) => {
+const Button = ({ children, variant = 'primary', className = '', to, ...props }) => {
   const baseClass = 'neo-btn';
   const variantClass = variant === 'primary' ? 'neo-btn-primary' : 'neo-btn-secondary';
+  const combinedClass = `${baseClass} ${variantClass} ${className}`;
+  
+  if (to) {
+    return (
+      <Link to={to} className={combinedClass} {...props}>
+        {children}
+      </Link>
+    );
+  }
   
   return (
-    <button className={`${baseClass} ${variantClass} ${className}`} {...props}>
+    <button className={combinedClass} {...props}>
       {children}
     </button>
   );

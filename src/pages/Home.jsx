@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Accordion from '../components/Accordion';
 
+const pricingOptions = [
+  { country: '🇺🇸 United States', psych: 'US$397', recommended: 'US$399' },
+  { country: '🇨🇦 Canada', psych: 'CA$547', recommended: 'CA$549' },
+  { country: '🇬🇧 United Kingdom', psych: '£297', recommended: '£297' },
+  { country: '🇦🇺 Australia', psych: 'A$597', recommended: 'A$597' },
+  { country: '🇮🇳 India', psych: '₹19,999', recommended: '₹19,999' }
+];
+
 function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPricing, setSelectedPricing] = useState(pricingOptions[0]);
+
   return (
     <>
       {/* Section 1: Hero Section */}
@@ -24,8 +35,8 @@ function Home() {
               In just 26 days, learn to build real products with AI — no coding background needed. Then learn how to actually get customers.
             </p>
             <div className="hero-buttons" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              <Button variant="primary" style={{ fontSize: '1.125rem', padding: '16px 32px' }}>Join The Course</Button>
-              <Button variant="secondary" style={{ fontSize: '1.125rem', padding: '16px 32px' }}>Watch Free Lessons</Button>
+              <Button to="/apply" variant="primary" style={{ fontSize: '1.125rem', padding: '16px 32px' }}>Join The Course</Button>
+              <Button variant="secondary" style={{ fontSize: '1.125rem', padding: '16px 32px' }} onClick={() => setIsModalOpen(true)}>Early bird Enrollment</Button>
             </div>
           </div>
           <div>
@@ -227,29 +238,72 @@ function Home() {
           <Card style={{ backgroundColor: 'var(--color-secondary-light)', color: 'var(--color-primary-dark)', maxWidth: '500px', margin: '0 auto 40px', padding: '40px 24px' }}>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '16px' }}>Join The AI Founder Blueprint</h3>
             <p style={{ fontSize: '1rem', marginBottom: '24px', fontWeight: '500' }}>Lifetime access to all 26 days, plus a real chance at an internship with our Australian companies upon completion.</p>
+            
+            <div style={{ marginBottom: '16px' }}>
+              <select 
+                value={selectedPricing.country} 
+                onChange={(e) => setSelectedPricing(pricingOptions.find(p => p.country === e.target.value))}
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '2px solid var(--color-primary-dark)', fontSize: '1rem', backgroundColor: 'white', cursor: 'pointer' }}
+              >
+                {pricingOptions.map(option => (
+                  <option key={option.country} value={option.country}>{option.country}</option>
+                ))}
+              </select>
+            </div>
+
             <div style={{ fontSize: '3rem', fontWeight: '800', fontFamily: 'var(--font-serif)', marginBottom: '8px' }}>
-              $297 <span style={{ fontSize: '1.5rem', color: '#666', textDecoration: 'line-through', fontWeight: '500' }}>$597</span>
+              {selectedPricing.psych} 
             </div>
             <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-primary-accent)', marginBottom: '24px' }}>Early-bird pricing — limited spots.</p>
-            <button style={{
+            <Button to="/apply" variant="primary" style={{
               width: '100%',
-              backgroundColor: 'var(--color-primary-accent)',
-              color: 'var(--color-secondary-light)',
               padding: '16px 32px',
-              borderRadius: '999px',
               fontSize: '1.25rem',
-              fontWeight: '700',
-              border: '2px solid var(--color-primary-dark)',
-              boxShadow: '4px 4px 0px var(--color-primary-dark)',
-              cursor: 'pointer',
-              transition: 'transform 0.2s'
+              textAlign: 'center'
             }}>
               Enroll Now
-            </button>
+            </Button>
           </Card>
 
         </div>
       </section>
+
+      {/* Early Bird Modal */}
+      {isModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <Card style={{ backgroundColor: 'var(--color-secondary-light)', maxWidth: '700px', width: '100%', position: 'relative', padding: '32px' }}>
+            <button onClick={() => setIsModalOpen(false)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--color-primary-dark)' }}>×</button>
+            <h2 className="h2-display" style={{ marginBottom: '16px' }}>Early Bird Enrollment</h2>
+            
+            <div style={{ marginBottom: '16px' }}>
+              <select 
+                value={selectedPricing.country} 
+                onChange={(e) => setSelectedPricing(pricingOptions.find(p => p.country === e.target.value))}
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '2px solid var(--color-primary-dark)', fontSize: '1rem', backgroundColor: 'white', cursor: 'pointer' }}
+              >
+                {pricingOptions.map(option => (
+                  <option key={option.country} value={option.country}>{option.country}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ fontSize: '2.5rem', fontWeight: '800', fontFamily: 'var(--font-serif)', marginBottom: '8px', color: 'var(--color-primary-dark)' }}>
+              {selectedPricing.psych} 
+            </div>
+            <p style={{ fontWeight: 'bold', color: 'var(--color-primary-accent)', marginBottom: '24px', fontSize: '1.125rem' }}>Offer valid till Oct 1!</p>
+            
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '12px' }}>Program Benefits:</h3>
+            <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
+              <li style={{ display: 'flex', gap: '8px', fontSize: '1rem' }}><span>✅</span> <span>Build a real website and mobile app with AI.</span></li>
+              <li style={{ display: 'flex', gap: '8px', fontSize: '1rem' }}><span>✅</span> <span>Lifetime access to all 26 days of content.</span></li>
+              <li style={{ display: 'flex', gap: '8px', fontSize: '1rem' }}><span>✅</span> <span>Learn real marketing & SEO to get customers.</span></li>
+              <li style={{ display: 'flex', gap: '8px', fontSize: '1rem' }}><span>✅</span> <span>A real chance at an internship with our companies upon completion.</span></li>
+            </ul>
+            
+            <Button to="/apply" variant="primary" style={{ width: '100%', padding: '16px', fontSize: '1.25rem', textAlign: 'center' }}>Claim Your Spot Now</Button>
+          </Card>
+        </div>
+      )}
     </>
   );
 }
