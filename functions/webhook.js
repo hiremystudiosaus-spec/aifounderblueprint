@@ -1,23 +1,66 @@
-import Stripe from 'stripe';
+// Verify Stripe Webhook Signature natively using Web Crypto API
+async function verifyStripeSignature(payload, sigHeader, secret) {
+  const parts = sigHeader.split(',').reduce((acc, part) => {
+    const [key, value] = part.split('=');
+    acc[key] = value;
+    return acc;
+  }, {});
+
+  const timestamp = parts['t'];
+  const signature = parts['v1'];
+
+  if (!timestamp || !signature) {
+    throw new Error('Invalid signature header format');
+  }
+
+  const signedPayload = `${timestamp}.${payload}`;
+  const encoder = new TextEncoder();
+  
+  // Import the webhook secret
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['verify']
+  );
+
+  // Convert hex signature to Uint8Array
+  const signatureBytes = new Uint8Array(
+    signature.match(/.{1,2}/g).map(byte => parseInt(byte, 16))
+  );
+
+  // Verify
+  const isValid = await crypto.subtle.verify(
+    'HMAC',
+    key,
+    signatureBytes,
+    encoder.encode(signedPayload)
+  );
+
+  if (!isValid) {
+    throw new Error('Signature verification failed');
+  }
+  return true;
+}
 
 export async function onRequestPost(context) {
   const { request, env } = context;
   
-  const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-    httpClient: Stripe.createFetchHttpClient(),
-    apiVersion: '2023-10-16',
-  });
-
   const sig = request.headers.get('stripe-signature');
+  if (!sig) return new Response("Missing signature", { status: 400 });
+
   const bodyText = await request.text();
-  let event;
 
   try {
-    // In Edge environments, use constructEventAsync
-    event = await stripe.webhooks.constructEventAsync(bodyText, sig, env.STRIPE_WEBHOOK_SECRET);
+    // Verify payload is actually from Stripe
+    await verifyStripeSignature(bodyText, sig, env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
+    console.error(`Webhook signature verification failed:`, err.message);
     return new Response(`Webhook Error: ${err.message}`, { status: 400 });
   }
+
+  const event = JSON.parse(bodyText);
 
   // Handle the checkout.session.completed event
   if (event.type === 'checkout.session.completed') {
@@ -26,9 +69,6 @@ export async function onRequestPost(context) {
 
     if (applicationId) {
       console.log(`Payment successful for Application ID: ${applicationId}`);
-      
-      // Update Firebase using REST API to avoid Firebase Admin SDK node compatibility issues in Edge
-      // We will use a structured query to find the document ID, then patch it
       
       const projectId = env.VITE_FIREBASE_PROJECT_ID;
       const apiKey = env.VITE_FIREBASE_API_KEY;
@@ -64,9 +104,8 @@ export async function onRequestPost(context) {
         const queryData = await queryRes.json();
         
         if (queryData && queryData.length > 0 && queryData[0].document) {
-          const docName = queryData[0].document.name; // e.g. projects/.../documents/applications/ID
+          const docName = queryData[0].document.name; 
           
-          // Patch the document to update status to "paid"
           const updateUrl = `https://firestore.googleapis.com/v1/${docName}?updateMask.fieldPaths=status&key=${apiKey}`;
           
           const updatePayload = {

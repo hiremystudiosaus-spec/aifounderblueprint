@@ -1,13 +1,5 @@
-import Stripe from 'stripe';
-
 export async function onRequestPost(context) {
   const { request, env } = context;
-  
-  // Initialize Stripe with Cloudflare's fetch HTTP client
-  const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-    httpClient: Stripe.createFetchHttpClient(),
-    apiVersion: '2023-10-16', // or current stable
-  });
 
   try {
     const body = await request.json();
@@ -20,29 +12,39 @@ export async function onRequestPost(context) {
       });
     }
 
-    const paymentMethods = currency.toLowerCase() === 'inr' ? ['card', 'upi'] : ['card'];
+    // Prepare x-www-form-urlencoded data for Stripe REST API
+    const params = new URLSearchParams();
+    
+    // Add payment methods
+    params.append('payment_method_types[0]', 'card');
+    if (currency.toLowerCase() === 'inr') {
+      params.append('payment_method_types[1]', 'upi');
+    }
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: paymentMethods,
-      line_items: [
-        {
-          price_data: {
-            currency: currency,
-            product_data: {
-              name: productName || 'The AI Founder Blueprint Enrollment',
-            },
-            unit_amount: amount,
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: 'https://aifounderblueprint.com.au/success',
-      cancel_url: 'https://aifounderblueprint.com.au/apply',
-      metadata: {
-        applicationId: applicationId
-      }
+    params.append('line_items[0][price_data][currency]', currency);
+    params.append('line_items[0][price_data][product_data][name]', productName || 'The AI Founder Blueprint Enrollment');
+    params.append('line_items[0][price_data][unit_amount]', amount.toString());
+    params.append('line_items[0][quantity]', '1');
+    params.append('mode', 'payment');
+    params.append('success_url', 'https://aifounderblueprint.com.au/success');
+    params.append('cancel_url', 'https://aifounderblueprint.com.au/apply');
+    params.append('metadata[applicationId]', applicationId);
+
+    const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString()
     });
+
+    if (!stripeResponse.ok) {
+      const errorData = await stripeResponse.json();
+      throw new Error(errorData.error?.message || 'Failed to create session');
+    }
+
+    const session = await stripeResponse.json();
 
     return new Response(JSON.stringify({ url: session.url }), {
       status: 200,
