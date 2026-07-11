@@ -95,7 +95,7 @@ function Apply() {
   const handlePayment = async () => {
     setIsRedirecting(true);
     try {
-      const response = await fetch('https://aifounderblueprint.com.au/create-checkout-session', {
+      const response = await fetch('/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
