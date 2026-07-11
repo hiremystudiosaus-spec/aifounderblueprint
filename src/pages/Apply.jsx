@@ -99,6 +99,7 @@ function Apply() {
       currency: submittedPriceObj?.currency || 'usd',
       plan: 'full',
       email: formData.email || '',
+      name: formData.name || '',
       cancelled: 'false',
       applicationId: submittedAppId || ''
     });
