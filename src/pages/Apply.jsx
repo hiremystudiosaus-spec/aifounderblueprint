@@ -78,9 +78,9 @@ function Apply() {
     };
 
     try {
-      await addDoc(collection(db, "applications"), applicationPayload);
+      const docRef = await addDoc(collection(db, "applications"), applicationPayload);
       console.log('Application submitted:', applicationPayload);
-      setSubmittedAppId(uniqueId);
+      setSubmittedAppId(docRef.id);
       setSubmittedPriceObj(priceObj);
       setIsSubmitted(true);
       setIsSubmitting(false);
