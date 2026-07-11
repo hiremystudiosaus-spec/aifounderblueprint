@@ -44,7 +44,7 @@ async function verifyStripeSignature(payload, sigHeader, secret) {
   return true;
 }
 
-export async function onRequestPost(context) {
+export async function onRequest(context) {
   const { request, env } = context;
   
   const sig = request.headers.get('stripe-signature');
