@@ -92,6 +92,20 @@ function Apply() {
   };
 
 
+  const handlePayment = () => {
+    const params = new URLSearchParams({
+      course: formData.course || '',
+      price: submittedPriceObj?.amount || '',
+      currency: submittedPriceObj?.currency || 'usd',
+      plan: 'full',
+      email: formData.email || '',
+      cancelled: 'false',
+      applicationId: submittedAppId || ''
+    });
+    
+    window.location.href = `https://pay.aifounderblueprint.com.au/checkout?${params.toString()}`;
+  };
+
   if (isSubmitted) {
     return (
       <div style={{ backgroundColor: 'var(--bg-main)', minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 24px' }}>
@@ -101,7 +115,7 @@ function Apply() {
           <p style={{ fontSize: '1.125rem', marginBottom: '32px' }}>
             Thank you for applying, {formData.name}. To finalize your enrollment and secure your spot, please complete the payment below.
           </p>
-          <Button variant="primary" style={{ padding: '16px 32px', fontSize: '1.25rem', width: '100%' }}>
+          <Button onClick={handlePayment} variant="primary" style={{ padding: '16px 32px', fontSize: '1.25rem', width: '100%' }}>
             {`Pay the Enrollment Fee (${submittedPriceObj?.display})`}
           </Button>
         </Card>
